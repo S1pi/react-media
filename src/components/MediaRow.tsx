@@ -1,18 +1,27 @@
 import {MediaItem} from '../types';
+import '../mediaRow.css';
 
-const MediaRow = (props: {item: MediaItem}) => {
-  const {item} = props;
+const MediaRow = (props: {
+  item: MediaItem;
+  setSelectedItem: (item: MediaItem | undefined) => void;
+}) => {
+  const {item, setSelectedItem} = props;
   return (
-    <tr key={item.media_id}>
-      <td>
-        <img src={item.thumbnail as string} alt={item.title} />
-      </td>
-      <td>{item.title}</td>
-      <td>{item.description}</td>
-      <td>{new Date(item.created_at).toLocaleString('fi-FI')}</td>
-      <td>{item.filesize}</td>
-      <td>{item.media_type}</td>
-    </tr>
+    <>
+      <tr>
+        <td>
+          <img src={item.thumbnail || undefined} alt={item.title} />
+        </td>
+        <td>{item.title}</td>
+        <td>{item.description}</td>
+        <td>{new Date(item.created_at).toLocaleString('fi-FI')}</td>
+        <td>{item.filesize}</td>
+        <td>{item.media_type}</td>
+      </tr>
+      <button onClick={() => setSelectedItem(item)} style={{height: '100%'}}>
+        NAPPI
+      </button>
+    </>
   );
 };
 

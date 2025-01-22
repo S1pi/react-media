@@ -1,5 +1,7 @@
+import {useState} from 'react';
 import {MediaItem} from '../types';
 import MediaRow from './MediaRow';
+import SingleView from './SingleView';
 
 const mediaArray: MediaItem[] = [
   {
@@ -42,10 +44,15 @@ const mediaArray: MediaItem[] = [
 ];
 
 const Home = () => {
+  const [selectedItem, setSelectedItem] = useState<MediaItem | undefined>();
+
   return (
     <>
+      {selectedItem ? (
+        <SingleView item={selectedItem} setSelectedItem={setSelectedItem} />
+      ) : null}
       <h2>My Media</h2>
-      <table>
+      <table style={{tableLayout: 'fixed'}}>
         <thead>
           <tr>
             <th>Thumbnail</th>
@@ -58,7 +65,11 @@ const Home = () => {
         </thead>
         <tbody>
           {mediaArray.map((item) => (
-            <MediaRow key={item.media_id} item={item} />
+            <MediaRow
+              key={item.media_id}
+              item={item}
+              setSelectedItem={setSelectedItem}
+            />
           ))}
         </tbody>
       </table>
