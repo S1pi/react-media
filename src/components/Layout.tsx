@@ -1,10 +1,9 @@
-import {Link} from 'react-router-dom';
+import {Link, Outlet} from 'react-router';
 
 const Layout = () => {
   return (
     <>
       <h1>My App</h1>
-
       <div>
         <nav>
           <ul>

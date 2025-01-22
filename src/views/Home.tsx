@@ -52,7 +52,7 @@ const Home = () => {
         <SingleView item={selectedItem} setSelectedItem={setSelectedItem} />
       ) : null}
       <h2>My Media</h2>
-      <table style={{tableLayout: 'fixed'}}>
+      <table>
         <thead>
           <tr>
             <th>Thumbnail</th>

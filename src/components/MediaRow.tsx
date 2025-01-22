@@ -1,11 +1,13 @@
 import {MediaItem} from '../types';
 import '../mediaRow.css';
+import {Link} from 'react-router';
 
 const MediaRow = (props: {
   item: MediaItem;
   setSelectedItem: (item: MediaItem | undefined) => void;
 }) => {
-  const {item, setSelectedItem} = props;
+  // const {item, setSelectedItem} = props;
+  const {item} = props;
   return (
     <>
       <tr>
@@ -18,9 +20,14 @@ const MediaRow = (props: {
         <td>{item.filesize}</td>
         <td>{item.media_type}</td>
       </tr>
-      <button onClick={() => setSelectedItem(item)} style={{height: '100%'}}>
+      <td>
+        <Link to="/single" state={{item}}>
+          Show
+        </Link>
+      </td>
+      {/* <button onClick={() => setSelectedItem(item)} style={{height: '100%'}}>
         NAPPI
-      </button>
+      </button> */}
     </>
   );
 };
