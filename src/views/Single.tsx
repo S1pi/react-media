@@ -9,9 +9,9 @@ const Single = () => {
     <>
       <h2>Single</h2>
       <h2>{item.title}</h2>
-      <p>{item.description}</p>
       <p>{new Date(item.created_at).toLocaleString('fi-FI')}</p>
-      <p>{item.filesize}</p>
+      {/* <p>{item.description}</p> */}
+      <p>{Math.round(item.filesize / 1024)} kb</p>
       {/* Media tyyppi checkki tähän! */}
       {item.media_type === 'video/mp4' ? (
         <video controls width="800">
@@ -21,6 +21,8 @@ const Single = () => {
       ) : (
         <img src={item.thumbnail || undefined} alt={item.title} />
       )}
+      <br />
+      <p>{item.description}</p>
       <button
         onClick={() => {
           navigate(-1);
