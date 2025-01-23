@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
@@ -5,7 +6,12 @@ import react from '@vitejs/plugin-react-swc';
 export default defineConfig({
   plugins: [react()],
   // base path for deployment (comment for development)
-  base: '/~miikavs/hybrid-react-build/',
+  // base: '/~miikavs/hybrid-react-build/',
   // base path for development (comment for deployment)
-  // base: ''
+  base: '',
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './vitest-setup.js',
+  },
 });
