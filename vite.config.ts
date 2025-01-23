@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react-swc';
 export default defineConfig({
   plugins: [react()],
   // base path for deployment (comment for development)
-  base: '/~miikavs/hybris-react-build/',
+  base: '/~miikavs/hybrid-react-build/',
   // base path for development (comment for deployment)
   // base: ''
 });
