@@ -9,14 +9,15 @@ const Single = () => {
     <>
       <h2>Single</h2>
       <h2>{item.title}</h2>
+      <p>Miika on työtön!!!</p>
       <p>{new Date(item.created_at).toLocaleString('fi-FI')}</p>
       {/* <p>{item.description}</p> */}
       <p>{Math.round(item.filesize / 1024)} kb</p>
       {/* Media tyyppi checkki tähän! */}
-      {item.media_type === 'video/mp4' ? (
+      {item.media_type.includes('video') ? (
         <video controls width="800">
           {' '}
-          <source src={item.filename} type="video/mp4" />{' '}
+          <source src={item.filename} />{' '}
         </video>
       ) : (
         <img src={item.thumbnail || undefined} alt={item.title} />

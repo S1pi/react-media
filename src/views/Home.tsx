@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react';
-import {MediaItem} from '../types';
+import {MediaItem, MediaItemWithOwner, UserWithNoPassword} from '../types';
 import MediaRow from '../components/MediaRow';
 import SingleView from '../components/SingleView';
 import {fetchData} from '../lib/functions';
 
 const Home = () => {
-  const [mediaArray, setMediaArray] = useState<MediaItem[]>([]);
+  const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   const [selectedItem, setSelectedItem] = useState<MediaItem | undefined>();
 
   console.log(mediaArray);
@@ -13,10 +13,38 @@ const Home = () => {
   useEffect(() => {
     const getMedia = async () => {
       try {
-        const json = await fetchData<MediaItem[]>(
+        // Kaikki mediat ilman omistajan tietoja
+        const media = await fetchData<MediaItem[]>(
           import.meta.env.VITE_MEDIA_API + '/media',
         );
-        setMediaArray(json);
+        // haetaan omistajat id:n perusteella
+        const mediaWithOwner: MediaItemWithOwner[] =
+          await Promise.all<MediaItemWithOwner>(
+            media.map(async (item) => {
+              const owner = await fetchData<UserWithNoPassword>(
+                import.meta.env.VITE_AUTH_API + '/users/' + item.media_id,
+              );
+
+              const medItem: MediaItemWithOwner = {
+                ...item,
+                username: owner.username,
+              };
+
+              if (
+                medItem.screenshots &&
+                typeof medItem.screenshots === 'string'
+              ) {
+                medItem.screenshots = JSON.parse(medItem.screenshots).map(
+                  (screenshot: string) => {
+                    return import.meta.env.VITE_FILE_URL + screenshot;
+                  },
+                );
+              }
+              return medItem;
+            }),
+          );
+
+        setMediaArray(mediaWithOwner);
       } catch (error) {
         console.error((error as Error).message);
       }
@@ -39,6 +67,7 @@ const Home = () => {
             <th>Created</th>
             <th>Size</th>
             <th>Type</th>
+            <th>Owner</th>
           </tr>
         </thead>
         <tbody>
