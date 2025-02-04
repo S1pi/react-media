@@ -1,3 +1,5 @@
+import {User} from 'hybrid-types/DBTypes';
+
 type MessageResponse = {
   message: string;
 };
@@ -18,5 +20,8 @@ type Author = {
   name: string;
   email: string;
 };
+
+export type Credentials = Pick<User, 'username' | 'password'>;
+export type RegisterCredentials = Pick<User, 'username' | 'password' | 'email'>;
 
 export type {MessageResponse, ErrorResponse, Article, Author};
