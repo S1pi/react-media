@@ -1,62 +1,61 @@
-import {useEffect, useState} from 'react';
-import {MediaItem, MediaItemWithOwner, UserWithNoPassword} from '../types';
+import {
+  MediaItem,
+  MediaItemWithOwner,
+  UserWithNoPassword,
+} from 'hybrid-types/DBTypes';
 import MediaRow from '../components/MediaRow';
+import {useEffect, useState} from 'react';
 import SingleView from '../components/SingleView';
 import {fetchData} from '../lib/functions';
 
 const Home = () => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
-  const [selectedItem, setSelectedItem] = useState<MediaItem | undefined>();
-
-  console.log(mediaArray);
+  const [selectedItem, setSelectedItem] = useState<
+    MediaItemWithOwner | undefined
+  >(undefined);
 
   useEffect(() => {
     const getMedia = async () => {
       try {
-        // Kaikki mediat ilman omistajan tietoja
+        // kaikki mediat ilman omistajan tietoja
         const media = await fetchData<MediaItem[]>(
           import.meta.env.VITE_MEDIA_API + '/media',
         );
         // haetaan omistajat id:n perusteella
-        const mediaWithOwner: MediaItemWithOwner[] =
-          await Promise.all<MediaItemWithOwner>(
-            media.map(async (item) => {
-              const owner = await fetchData<UserWithNoPassword>(
-                import.meta.env.VITE_AUTH_API + '/users/' + item.media_id,
-              );
+        const mediaWithOwner: MediaItemWithOwner[] = await Promise.all(
+          media.map(async (item) => {
+            const owner = await fetchData<UserWithNoPassword>(
+              // HUOM: media_id päivitetty user_id:ksi
+              import.meta.env.VITE_AUTH_API + '/users/' + item.user_id,
+            );
 
-              const medItem: MediaItemWithOwner = {
-                ...item,
-                username: owner.username,
-              };
+            const mediaItem: MediaItemWithOwner = {
+              ...item,
+              username: owner.username,
+            };
+            // muista päivitää tyypit: 'npm i -D github:ilkkamtk/hybrid-types'
+            return mediaItem;
+          }),
+        );
 
-              if (
-                medItem.screenshots &&
-                typeof medItem.screenshots === 'string'
-              ) {
-                medItem.screenshots = JSON.parse(medItem.screenshots).map(
-                  (screenshot: string) => {
-                    return import.meta.env.VITE_FILE_URL + screenshot;
-                  },
-                );
-              }
-              return medItem;
-            }),
-          );
+        console.log(mediaWithOwner);
 
         setMediaArray(mediaWithOwner);
       } catch (error) {
         console.error((error as Error).message);
       }
     };
+
     getMedia();
   }, []);
 
+  console.log(mediaArray);
+
   return (
     <>
-      {selectedItem ? (
+      {selectedItem && (
         <SingleView item={selectedItem} setSelectedItem={setSelectedItem} />
-      ) : null}
+      )}
       <h2>My Media</h2>
       <table>
         <thead>
@@ -73,8 +72,8 @@ const Home = () => {
         <tbody>
           {mediaArray.map((item) => (
             <MediaRow
-              key={item.media_id}
               item={item}
+              key={item.media_id}
               setSelectedItem={setSelectedItem}
             />
           ))}
@@ -83,5 +82,4 @@ const Home = () => {
     </>
   );
 };
-
 export default Home;

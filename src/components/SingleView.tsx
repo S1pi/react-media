@@ -1,30 +1,38 @@
-import {MediaItem} from '../types';
+import {MediaItemWithOwner} from 'hybrid-types/DBTypes';
 
 const SingleView = (props: {
-  item: MediaItem;
-  setSelectedItem: (item: MediaItem | undefined) => void;
+  item: MediaItemWithOwner | undefined;
+  setSelectedItem: (item: MediaItemWithOwner | undefined) => void;
 }) => {
   const {item, setSelectedItem} = props;
+  console.log(item);
   return (
+    // TODO: Add JSX for displaying a mediafile here
+    // - use e.g. a <dialog> element for creating a modal
+    // - use item prop to render the media item details
+    // - use img tag for displaying images
+    // - use video tag for displaying videos
     <dialog open>
-      <h2>{item.title}</h2>
-      <p>{item.description}</p>
-      <p>{new Date(item.created_at).toLocaleString('fi-FI')}</p>
-      <p>{item.filesize}</p>
-      <p>{item.media_type}</p>
-      <p>Jim on homo</p>
-      {/* Media tyyppi checkki tähän! */}
-      {item.media_type.includes('video') ? (
-        <video controls width="800" crossOrigin="anonymous">
-          {' '}
-          <source src={item.filename} />{' '}
-        </video>
-      ) : (
-        <img src={item.thumbnail || undefined} alt={item.title} />
+      {item && (
+        <>
+          <button
+            onClick={() => {
+              setSelectedItem(undefined);
+            }}
+          >
+            Close
+          </button>
+          <h3>{item.title}</h3>
+          <p>{new Date(item.created_at).toLocaleString('fi-FI')}</p>
+          {item.media_type.includes('image') ? (
+            <img src={item.filename} alt={item.title} />
+          ) : (
+            <video src={item.filename} controls />
+          )}
+          <p>{item.description}</p>
+        </>
       )}
-      <button onClick={() => setSelectedItem(undefined)}>Close</button>
     </dialog>
   );
 };
-
 export default SingleView;
